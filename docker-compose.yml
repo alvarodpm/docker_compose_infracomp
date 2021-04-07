@@ -1,0 +1,30 @@
+version: "3"
+
+#Los servicios son las imágenes que vamos a crear
+services:
+    web: 
+        container_name: exampleapp
+        #En caso de que algo falle, reinicie
+        restart: always
+        #Tenemos qué decirle cuál es el código que debe usar, el archivo docker.
+        #Acá le decimos "Quiero que construyas desde el archivo actual".
+        build: .
+        ports:
+            #Internamente funciona en el 3000, pero quiero que localmente esté en el 5000
+            - "5000:3000"
+        #¿Con qué contenedor va a estar enlazado? -> Creamos otro contenedor
+        #Enlazamos ambos contenedores
+        links:
+            - mongo
+        #Todo lo que escriba en el proyecto, se copia a esta ruta
+        volumes:
+            - .:/usr/src/app
+    mongo:
+        container_name: mymongodatabase
+        #¿En qué imagen va a estar basada?
+        image: mongo
+        ports:
+            - "27018:27017"
+        #Para no ver los logs en consola
+        logging: 
+            driver: none
